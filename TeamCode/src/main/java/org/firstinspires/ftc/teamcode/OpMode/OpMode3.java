@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
@@ -12,12 +11,8 @@ import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 @TeleOp(name = "OpMode3")
 
 public class OpMode3 extends LinearOpMode {
-    public ElapsedTime mRunTime = new ElapsedTime();
 
     RobotHardware robot = new RobotHardware();
-
-    private int sleepMs1 = 0;
-    private boolean bMoveUpSlider = false;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -60,29 +55,43 @@ public class OpMode3 extends LinearOpMode {
             ));
 
 
-//make sure one of the directions is correct/reversed
             //misumi slide start
             // To use continuous servo:
             // 1) change to continuous  rotation servo by using servo programmer
             // 2) on driver station, configured it as continuous rotation servo
             // 3) in Java code, use class "CRServo"
-            if (gamepad2.left_stick_y > 0.7) { //if joystick moved up
-                //misumi slide extends
+
+// flywheel left left joystick power on or off
+          /*  if (gamepad2.left_stick_y > 0.7) { //if joystick moved up
+                robot.flyWheell.setPower(0.5);
 
             } else if (gamepad2.left_stick_y < -0.7) {// if joystick moves down
                 // misumi slide retract
+                robot.flyWheell.setPower(0.0);
 
             } else { //stop
             }
 
 
-//grabberX on horizontal (misumi slide)
-            if (gamepad2.left_trigger > 0.5) {
+           */
 
-            } else if (gamepad2.left_bumper) {
+//flywheel right right joystick power on or off
+            if (gamepad2.y) {
+                robot.flyWheelr.setPower(-0.5);
+                robot.flyWheell.setPower(0.5);
 
-            } else {
-                //  robot.grabberX.setPosition(0);
+            } else if (gamepad2.a) {
+                robot.flyWheelr.setPower(0.0);
+                robot.flyWheell.setPower(0.0);
+            }
+
+            //hogback wheel
+            if (gamepad2.right_bumper) {
+                    robot.hogback.setPower(-0.4);
+            }
+
+            if (gamepad2.right_trigger > 0.5) {
+                    robot.hogback.setPower(0.0);
             }
 
 
@@ -132,19 +141,11 @@ public class OpMode3 extends LinearOpMode {
             sleep(crankTimeMs);          // let motor run for some time seconds.
             robot.liftHex.setPower(crankPowerEnd);   //set lower motor power to maintain the position
 
-            // Extend liftArm
-            robot.liftArm.setPower(liftPowerBegin);
-            sleep(liftTimeMs);             // let motor run for some time seconds.
-            robot.liftArm.setPower(liftPowerEnd);
-
-        }
-
-        }
 
 
       */
 
-        }
+            }
 
+        }
     }
-}

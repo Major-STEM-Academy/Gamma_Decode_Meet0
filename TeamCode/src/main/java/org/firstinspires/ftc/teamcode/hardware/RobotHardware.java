@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
@@ -23,12 +24,11 @@ public class RobotHardware {
 
     public DcMotor motorbl = null;
 
+    public DcMotor hogback = null;
 
 
-      public DcMotor launcher = null;
-
-     public Servo grabberXtilt = null; // tilt servo horizontal
-     public Servo grabberX = null;
+     public CRServo flyWheell = null; // tilt servo horizontal
+     public CRServo flyWheelr = null;
 
      public Servo grabberYtilt; //tilt servo vertical (2nd stage)
      public Servo grabberY = null;
@@ -61,10 +61,15 @@ public class RobotHardware {
         motorfr = hwMap.get(DcMotor.class, "motorfr");
         motorbl = hwMap.get(DcMotor.class, "motorbl");
         motorbr = hwMap.get(DcMotor.class, "motorbr");
+        hogback = hwMap.get(DcMotor.class, "hogback");
         //launcher = hwMap.get(DcMotor.class, "launcher");
 
         // Horizontal slide
-       // misumiSlide = hwMap.get(CRServo.class, "misumiSlide");
+        flyWheell = hwMap.get(CRServo.class, "flyWheell");
+        flyWheelr = hwMap.get(CRServo.class, "flyWheelr");
+
+
+
 
 
 
@@ -77,9 +82,6 @@ public class RobotHardware {
         motorbr.setDirection(DcMotor.Direction.REVERSE);
       //  motorbl.setDirection(DcMotor.Direction.REVERSE);
 
-        // LiftArm motor reset
-//        liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        liftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //motorbr.setDirection(DcMotor.Direction.REVERSE);
@@ -227,7 +229,6 @@ public class RobotHardware {
    port 3 motorap
    extension hub port 0 motorfr
    extension hub port 1 motorbr
-   extension hub port 2 liftArm
    extension hub port 3 liftHex
 
    Servos

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
