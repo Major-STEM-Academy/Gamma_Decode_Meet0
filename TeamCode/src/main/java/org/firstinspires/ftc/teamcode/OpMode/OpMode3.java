@@ -87,7 +87,7 @@ public class OpMode3 extends LinearOpMode {
 
             //hogback wheel
             if (gamepad2.right_bumper) {
-                    robot.hogback.setPower(-0.4);
+                    robot.hogback.setPower(-0.8);
             }
 
             if (gamepad2.right_trigger > 0.5) {
