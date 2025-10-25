@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,6 +15,8 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public abstract class AutoHardware extends LinearOpMode {
+
+    HardwareMap hwMap =  null;
 
     // motor configurations
     protected DcMotor         backleftDrive   = null;
@@ -84,6 +87,7 @@ public abstract class AutoHardware extends LinearOpMode {
 
     public Servo grabberXtilt = null;
 
+
     public void initAll(){
        // initTfodAndAprilTag();
         initServo();
@@ -91,20 +95,7 @@ public abstract class AutoHardware extends LinearOpMode {
         initIMU();
     }
     public void initServo() {
-        grabberYtilt = hardwareMap.get(Servo.class, "grabberYtilt");
-       // grabberTilt.setPosition(1);
-        grabberY = hardwareMap.get(Servo.class, "grabberY");
-       // grabberR = hardwareMap.get(Servo.class, "grabberR");
-       // grabberR.setPosition(0.6);
-        grabberXtilt = hardwareMap.get(Servo.class, "grabberXtilt");
-        grabberX = hardwareMap.get(Servo.class, "grabberX");
 
-       // misumiSlide = hardwareMap.get(DcMotor.class, "misumiSlide");
-
-       // misumiSlide.setTargetPosition(BotCoefficients.SLIDER_BOTTOM_POSITION);
-       // misumiSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       // misumiSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //misumiSlide.setPower(Math.abs(BotCoefficients.SLIDER_UP_SPEED));
 
     }
 
@@ -127,10 +118,8 @@ public abstract class AutoHardware extends LinearOpMode {
 
         //backrightDrive.setDirection(DcMotor.Direction.REVERSE);
         //backleftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontrightDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontleftDrive.setDirection(DcMotor.Direction.REVERSE);
-
-
+        frontrightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backrightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void encoderDrive(double speed,

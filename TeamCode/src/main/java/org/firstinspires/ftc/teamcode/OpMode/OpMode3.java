@@ -129,7 +129,7 @@ public class OpMode3 extends LinearOpMode {
         while(opModeIsActive()
                 && robot.liftHex.isBusy()
                 && (timeCurrent - timeBegin) < timeOutMills) {
-            timeCurrent = System.currentTimeMillis();
+            timeCurrent = System.currenetTimeMillis();
 
 
 
