@@ -61,9 +61,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "StarterBotTeleopMecanums", group = "StarterBot")
 //@Disabled
 public class StarterBotTeleopMecanums extends OpMode {
-    final double FEED_TIME_SECONDS = 0.2; //The feeder servos run this long when a shot is requested.
+    final double FEED_TIME_SECONDS = 0.15; //The feeder servos run this long when a shot is requested.
     final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
-    final double FULL_SPEED = 1.0;
+    final double FULL_SPEED = -1;
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -71,8 +71,8 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1200;
-    final double LAUNCHER_MIN_VELOCITY = 1100;
+    final double LAUNCHER_TARGET_VELOCITY = 1600;
+    final double LAUNCHER_MIN_VELOCITY = 1500;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
@@ -156,7 +156,7 @@ public class StarterBotTeleopMecanums extends OpMode {
          * through any wiring.
          */
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        launcher.setDirection(DcMotor.Direction.REVERSE);
         /*
          * Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to
          * slow down much faster when it is coasting. This creates a much more controllable
@@ -171,6 +171,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         /*
          * set Feeders to an initial value to initialize the servo controller
          */
+
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
 
