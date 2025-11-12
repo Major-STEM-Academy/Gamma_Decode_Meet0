@@ -61,7 +61,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * it will move forward in the enum. This allows us to run the autonomous period inside of our
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
-
 @Autonomous(name="StarterBotAuto", group="StarterBot")
 //@Disabled
 public class StarterBotAuto extends OpMode
