@@ -3,11 +3,6 @@ package org.firstinspires.ftc.teamcode.auto;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.auto.AutoHardware;
 
 //ignore this for now
 @Autonomous(name="leaveBase")
@@ -36,7 +31,7 @@ public class leaveBase extends AutoHardware  {
 
         // int forwardTicks = -2000; // strafe right
         // driveMotors(forwardTicks,-forwardTicks,-forwardTicks,forwardTicks, 0.5, false, robot.yaw0);
-        sleep (3000);
+        sleep (5000);
 
 
 
