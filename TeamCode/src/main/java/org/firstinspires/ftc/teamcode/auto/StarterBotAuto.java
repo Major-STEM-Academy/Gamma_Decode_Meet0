@@ -193,9 +193,9 @@ public class StarterBotAuto extends OpMode
          */
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        launcher = hardwareMap.get(DcMotorEx.class,"launcher");
-        leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
-        rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
+        launcher = hardwareMap.get(DcMotorEx.class,"hogback");
+        leftFeeder = hardwareMap.get(CRServo.class, "flyWheell");
+        rightFeeder = hardwareMap.get(CRServo.class, "flyWheelr");
 
 
         /*
