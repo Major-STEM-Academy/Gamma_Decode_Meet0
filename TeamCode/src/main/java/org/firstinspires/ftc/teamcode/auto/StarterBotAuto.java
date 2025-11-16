@@ -20,8 +20,8 @@ public class StarterBotAuto extends OpMode {
     // Feeder and launcher timing
     final double FEED_TIME = 0.2;             // seconds to run feeder per ball
     final double TIME_BETWEEN_SHOTS = 1.0;    // seconds between shots
-    final double LAUNCHER_TARGET_VELOCITY = 1600;      // spin-up target
-    final double LAUNCHER_MIN_VELOCITY = 1500;
+  final double LAUNCHER_TARGET_VELOCITY = 1750;      // spin-up target
+      final double LAUNCHER_MIN_VELOCITY = 1650;
 
     // Drive constants
     final double DRIVE_SPEED = 0.5;
