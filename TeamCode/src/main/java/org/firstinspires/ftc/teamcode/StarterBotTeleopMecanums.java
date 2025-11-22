@@ -71,15 +71,15 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1700;
-    final double LAUNCHER_MIN_VELOCITY = 1600;
+    final double HOGBACK_TARGET_VELOCITY = 1700;
+    final double HOGBACK_MIN_VELOCITY = 1600;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotorEx launcher = null;
+    private DcMotorEx hogback = null;
     private CRServo leftFeeder = null;
     private CRServo rightFeeder = null;
 
@@ -132,7 +132,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "motorfr");
         leftBackDrive = hardwareMap.get(DcMotor.class, "motorbl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "motorbr");
-        launcher = hardwareMap.get(DcMotorEx.class, "hogback");
+        hogback = hardwareMap.get(DcMotorEx.class, "hogback");
         leftFeeder = hardwareMap.get(CRServo.class, "flyWheell");
         rightFeeder = hardwareMap.get(CRServo.class, "flyWheelr");
 
@@ -155,8 +155,8 @@ public class StarterBotTeleopMecanums extends OpMode {
          * into the port right beside the motor itself. And that the motors polarity is consistent
          * through any wiring.
          */
-        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        launcher.setDirection(DcMotor.Direction.REVERSE);
+        hogback.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hogback.setDirection(DcMotor.Direction.REVERSE);
         /*
          * Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to
          * slow down much faster when it is coasting. This creates a much more controllable
@@ -166,7 +166,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         rightFrontDrive.setZeroPowerBehavior(BRAKE);
         leftBackDrive.setZeroPowerBehavior(BRAKE);
         rightBackDrive.setZeroPowerBehavior(BRAKE);
-        launcher.setZeroPowerBehavior(BRAKE);
+        hogback.setZeroPowerBehavior(BRAKE);
 
         /*
          * set Feeders to an initial value to initialize the servo controller
@@ -175,7 +175,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
 
-        launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
+        hogback.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
 
         /*
          * Much like our drivetrain motors, we set the left feeder servo to reverse so that they
@@ -224,9 +224,9 @@ public class StarterBotTeleopMecanums extends OpMode {
          * queuing a shot.
          */
         if (gamepad1.y) {
-            launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+            hogback.setVelocity(HOGBACK_TARGET_VELOCITY);
         } else if (gamepad1.a) { // stop hogback
-            launcher.setVelocity(STOP_SPEED);
+            hogback.setVelocity(STOP_SPEED);
         }
 
         /*
@@ -238,7 +238,7 @@ public class StarterBotTeleopMecanums extends OpMode {
          * Show the state and motor powers
          */
         telemetry.addData("State", launchState);
-        telemetry.addData("motorSpeed", launcher.getVelocity());
+        telemetry.addData("motorSpeed", hogback.getVelocity());
 
     }
 
@@ -277,8 +277,8 @@ public class StarterBotTeleopMecanums extends OpMode {
                 }
                 break;
             case SPIN_UP:
-                launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-                if (launcher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
+                hogback.setVelocity(HOGBACK_TARGET_VELOCITY);
+                if (hogback.getVelocity() > HOGBACK_MIN_VELOCITY) {
                     launchState = LaunchState.LAUNCH;
                 }
                 break;

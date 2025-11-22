@@ -41,7 +41,7 @@ public class StarterBotAuto extends LinearOpMode {
 
     // ******** ENCODER CONSTANTS ********
     static final double TICKS_PER_ROTATION = 560;   // GoBilda 5202/5203 motors
-    static final double ROTATIONS_TO_DRIVE = 6;     // you said 6 rotations
+    static final double ROTATIONS_TO_DRIVE = 1;
     static final double TICKS_TO_DRIVE = TICKS_PER_ROTATION * ROTATIONS_TO_DRIVE;
 
     @Override
