@@ -16,7 +16,7 @@ public class StarterBotAuto extends LinearOpMode {
     private DcMotorEx leftDrive;
     private DcMotorEx rightDrive;
 
-    // Shooter velocities
+    // hogback velocities
     final double LAUNCHER_VELOCITY = 1750;
     final double LAUNCHER_MIN_VELOCITY = 1650;
 
