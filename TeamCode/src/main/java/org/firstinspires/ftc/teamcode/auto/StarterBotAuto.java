@@ -47,7 +47,7 @@ public class StarterBotAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // Hardware map
+        // Hardware map .
         hogback = hardwareMap.get(DcMotorEx.class, "hogback");
         flyWheell = hardwareMap.get(CRServo.class, "flyWheell");
         flyWheelr = hardwareMap.get(CRServo.class, "flyWheelr");
