@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,8 +14,11 @@ public class StarterBotAuto extends LinearOpMode {
     private CRServo flyWheell;
     private CRServo flyWheelr;
 
-    private DcMotorEx leftDrive;
-    private DcMotorEx rightDrive;
+    private DcMotorEx leftFrontDrive;
+    private DcMotorEx rightFrontDrive;
+    private DcMotorEx rightBackDrive;
+    private DcMotorEx leftBackDrive;
+
 
     // Shooter velocities
     final double LAUNCHER_VELOCITY = 1750;
@@ -48,23 +52,35 @@ public class StarterBotAuto extends LinearOpMode {
         flyWheell = hardwareMap.get(CRServo.class, "flyWheell");
         flyWheelr = hardwareMap.get(CRServo.class, "flyWheelr");
 
-        leftDrive = hardwareMap.get(DcMotorEx.class, "leftDrive");
-        rightDrive = hardwareMap.get(DcMotorEx.class, "rightDrive");
+        leftFrontDrive = hardwareMap.get(DcMotorEx.class, "motorfl");
+        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "motorfr");
+        leftBackDrive = hardwareMap.get(DcMotorEx.class, "motorbl");
+        rightBackDrive = hardwareMap.get(DcMotorEx.class, "motorbr");
 
         flyWheell.setPower(0);
         flyWheell.setPower(0);
 
         hogback.setDirection(DcMotorEx.Direction.REVERSE);
 
-        leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
-        rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
+
+        leftFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotorEx.Direction.FORWARD);
 
         // Reset encoders
-        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         telemetry.addLine("Initialized - READY");
         telemetry.update();
@@ -124,28 +140,40 @@ public class StarterBotAuto extends LinearOpMode {
 
     // ************** ENCODER DRIVE FORWARD **************
     public void driveForwardWithEncoders(double power, int ticks) {
-        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDrive.setTargetPosition(ticks);
-        rightDrive.setTargetPosition(ticks);
+        leftBackDrive.setTargetPosition(ticks);
+        rightBackDrive.setTargetPosition(ticks);
+        leftFrontDrive.setTargetPosition(ticks);
+        rightFrontDrive.setTargetPosition(ticks);
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        leftDrive.setPower(power);
-        rightDrive.setPower(power);
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
 
-        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy()) {
+        while (opModeIsActive() && leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy()) {
             telemetry.addData("Driving", "Forward...");
             telemetry.update();
         }
 
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
     // ************** TURN LEFT 45° (ENCODER TURN) **************
@@ -154,27 +182,35 @@ public class StarterBotAuto extends LinearOpMode {
         // 45° = 1/8 of a full rotation (depends on robot)
         int turnTicks = (int)(TICKS_PER_ROTATION * 1.2);  // tweak as needed
 
-        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDrive.setTargetPosition(-turnTicks); // left wheel backward
-        rightDrive.setTargetPosition(turnTicks); // right wheel forward
+        leftFrontDrive.setTargetPosition(-turnTicks); // left wheel backward
+        rightFrontDrive.setTargetPosition(turnTicks); // right wheel forward
+        leftBackDrive.setTargetPosition(-turnTicks); // left wheel backward
+        rightBackDrive.setTargetPosition(turnTicks); // right wheel forward
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        leftDrive.setPower(power);
-        rightDrive.setPower(power);
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
 
-        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy()) {
-            telemetry.addData("Turning", "Left 45°");
-            telemetry.update();
-        }
 
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 }
