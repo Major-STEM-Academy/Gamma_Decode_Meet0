@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,22 +9,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "StarterBotAuto3Ball", group = "StarterBot")
 public class StarterBotAuto extends LinearOpMode {
 
-    private DcMotorEx launcher;
-    private CRServo leftFeeder;
-    private CRServo rightFeeder;
+    private DcMotorEx hogback;
+    private CRServo flyWheell;
+    private CRServo flyWheelr;
 
     private DcMotorEx leftDrive;
     private DcMotorEx rightDrive;
 
-    // Launcher speeds
-    final double LAUNCHER_VELOCITY = 1750;      // max spin-up
-    final double    LAUNCHER_MIN_VELOCITY = 1650;  // must reach this before feeding
+    // Shooter velocities
+    final double LAUNCHER_VELOCITY = 1750;
+    final double LAUNCHER_MIN_VELOCITY = 1650;
 
     // Feed timing
-    final double FEED_TIME = 0.5;
+    final double FEED_TIME = 0.8;
     final double STOP_SPEED = 0.0;
 
-    int shotsToFire = 1;  // 1 burst of 3 balls
+    int shotsToFire = 3;
 
     enum LaunchState {
         IDLE,
@@ -35,35 +35,49 @@ public class StarterBotAuto extends LinearOpMode {
     private LaunchState launchState = LaunchState.IDLE;
     private ElapsedTime feederTimer = new ElapsedTime();
 
+    // ******** ENCODER CONSTANTS ********
+    static final double TICKS_PER_ROTATION = 560;   // GoBilda 5202/5203 motors
+    static final double ROTATIONS_TO_DRIVE = 6;     // you said 6 rotations
+    static final double TICKS_TO_DRIVE = TICKS_PER_ROTATION * ROTATIONS_TO_DRIVE;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // Hardware initialization
-        launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-        leftFeeder = hardwareMap.get(CRServo.class, "leftFeeder");
-        rightFeeder = hardwareMap.get(CRServo.class, "rightFeeder");
+        // Hardware map
+        hogback = hardwareMap.get(DcMotorEx.class, "hogback");
+        flyWheell = hardwareMap.get(CRServo.class, "flyWheell");
+        flyWheelr = hardwareMap.get(CRServo.class, "flyWheelr");
 
         leftDrive = hardwareMap.get(DcMotorEx.class, "leftDrive");
         rightDrive = hardwareMap.get(DcMotorEx.class, "rightDrive");
 
-        leftFeeder.setPower(STOP_SPEED);
-        rightFeeder.setPower(STOP_SPEED);
+        flyWheell.setPower(0);
+        flyWheell.setPower(0);
 
-        launcher.setDirection(DcMotorEx.Direction.REVERSE);
+        hogback.setDirection(DcMotorEx.Direction.REVERSE);
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
+
+        // Reset encoders
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         telemetry.addLine("Initialized - READY");
         telemetry.update();
 
         waitForStart();
 
-        // *********** MOVE TO GOAL ***********
-        driveForward(0.4, 1.2);  // power, time (seconds)
-        sleep(300); // settle the robot
+        // ************** DRIVE FORWARD 6 ROTATIONS **************
+        driveForwardWithEncoders(0.4, (int) TICKS_TO_DRIVE);
 
-        // *********** START SHOOTER ***********
+        // **************** TURN LEFT 45° ****************
+        turnLeft45(0.4);
+
+        // **************** START SHOOTING ****************
         launchState = LaunchState.SPIN_UP;
 
         while (opModeIsActive()) {
@@ -71,13 +85,13 @@ public class StarterBotAuto extends LinearOpMode {
             switch (launchState) {
 
                 case SPIN_UP:
-                    launcher.setVelocity(LAUNCHER_VELOCITY);
+                    hogback.setVelocity(LAUNCHER_VELOCITY);
 
-                    if (launcher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
+                    if (hogback.getVelocity() > LAUNCHER_MIN_VELOCITY) {
                         launchState = LaunchState.LAUNCH;
 
-                        leftFeeder.setPower(1);
-                        rightFeeder.setPower(1);
+                        flyWheell.setPower(1);
+                        flyWheelr.setPower(1);
                         feederTimer.reset();
                     }
                     break;
@@ -85,35 +99,82 @@ public class StarterBotAuto extends LinearOpMode {
                 case LAUNCH:
                     if (feederTimer.seconds() > FEED_TIME) {
 
-                        leftFeeder.setPower(STOP_SPEED);
-                        rightFeeder.setPower(STOP_SPEED);
+                        flyWheell.setPower(0);
+                        flyWheelr.setPower(0);
 
                         shotsToFire--;
 
                         if (shotsToFire <= 0) {
-                            launcher.setPower(0);
+                            hogback.setPower(0);
                             launchState = LaunchState.IDLE;
                         }
                     }
                     break;
 
                 case IDLE:
-                    launcher.setPower(0);
+                    hogback.setPower(0);
                     break;
             }
 
-            telemetry.addData("Launcher Velocity", launcher.getVelocity());
+            telemetry.addData("Launcher Velocity", hogback.getVelocity());
             telemetry.addData("State", launchState);
             telemetry.update();
         }
     }
 
-    // *********** DRIVE FORWARD FUNCTION ***********
-    public void driveForward(double power, double timeSeconds) {
+    // ************** ENCODER DRIVE FORWARD **************
+    public void driveForwardWithEncoders(double power, int ticks) {
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setTargetPosition(ticks);
+        rightDrive.setTargetPosition(ticks);
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
         leftDrive.setPower(power);
         rightDrive.setPower(power);
-        sleep((long)(timeSeconds * 1000));
+
+        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy()) {
+            telemetry.addData("Driving", "Forward...");
+            telemetry.update();
+        }
+
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    }
+
+    // ************** TURN LEFT 45° (ENCODER TURN) **************
+    public void turnLeft45(double power) {
+
+        // 45° = 1/8 of a full rotation (depends on robot)
+        int turnTicks = (int)(TICKS_PER_ROTATION * 1.2);  // tweak as needed
+
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setTargetPosition(-turnTicks); // left wheel backward
+        rightDrive.setTargetPosition(turnTicks); // right wheel forward
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+
+        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy()) {
+            telemetry.addData("Turning", "Left 45°");
+            telemetry.update();
+        }
+
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 }
