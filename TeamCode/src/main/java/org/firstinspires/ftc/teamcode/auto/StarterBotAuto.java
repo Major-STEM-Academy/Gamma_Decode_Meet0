@@ -25,7 +25,7 @@ public class StarterBotAuto extends LinearOpMode {
     final double LAUNCHER_MIN_VELOCITY = 1650;
 
     // Feed timing
-    final double FEED_TIME = 0.8;
+    final double FEED_TIME = 1;
     final double STOP_SPEED = 0.0;
 
     int shotsToFire = 3;
@@ -87,7 +87,7 @@ public class StarterBotAuto extends LinearOpMode {
 
         waitForStart();
 
-        // ************** DRIVE FORWARD 6 ROTATIONS **************
+        // ************** DRIVE FORWARD 1 ROTATION **************
         driveForwardWithEncoders(0.4, (int) TICKS_TO_DRIVE);
 
         // **************** TURN LEFT 45° ****************
@@ -106,8 +106,8 @@ public class StarterBotAuto extends LinearOpMode {
                     if (hogback.getVelocity() > LAUNCHER_MIN_VELOCITY) {
                         launchState = LaunchState.LAUNCH;
 
-                        flyWheell.setPower(1);
-                        flyWheelr.setPower(1);
+                        flyWheell.setPower(3);
+                        flyWheelr.setPower(3);
                         feederTimer.reset();
                     }
                     break;
@@ -120,8 +120,8 @@ public class StarterBotAuto extends LinearOpMode {
 
                         shotsToFire--;
 
-                        if (shotsToFire <= 0) {
-                            hogback.setPower(0);
+                        if (shotsToFire <= 3) {
+                            hogback.setPower(3);
                             launchState = LaunchState.IDLE;
                         }
                     }
