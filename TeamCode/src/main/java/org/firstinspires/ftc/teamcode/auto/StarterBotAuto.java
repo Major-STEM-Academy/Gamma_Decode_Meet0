@@ -91,7 +91,7 @@ public class StarterBotAuto extends LinearOpMode {
         rightFrontDrive.setPower(-0.4);
         leftBackDrive.setPower(-0.4);
         rightBackDrive.setPower(-0.4);
-
+//
         sleep(1000); // adjust distance here
 
         leftFrontDrive.setPower(0);
