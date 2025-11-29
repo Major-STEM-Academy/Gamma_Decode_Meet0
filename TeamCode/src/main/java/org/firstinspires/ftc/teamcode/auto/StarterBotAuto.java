@@ -6,9 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
+
+
 @Autonomous(name = "StarterBotAuto3Ball", group = "StarterBot")
 public class StarterBotAuto extends LinearOpMode {
 
+    private Limelight3A limelight;
     private DcMotorEx hogback;
     private CRServo flyWheell;
     private CRServo flyWheelr;
@@ -34,6 +42,10 @@ public class StarterBotAuto extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotorEx.class, "motorfr");
         leftBackDrive = hardwareMap.get(DcMotorEx.class, "motorbl");
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "motorbr");
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
+        limelight.start(); // This tells Limelight to start looking!
 
         flyWheell.setDirection(CRServo.Direction.FORWARD);
         flyWheelr.setDirection(CRServo.Direction.REVERSE);
@@ -91,7 +103,7 @@ public class StarterBotAuto extends LinearOpMode {
         rightFrontDrive.setPower(-0.4);
         leftBackDrive.setPower(-0.4);
         rightBackDrive.setPower(-0.4);
-//
+
         sleep(1000); // adjust distance here
 
         leftFrontDrive.setPower(0);
