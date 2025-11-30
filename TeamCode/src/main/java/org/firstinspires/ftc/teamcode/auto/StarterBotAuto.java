@@ -10,7 +10,9 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.sun.tools.javac.util.List;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 
 @Autonomous(name = "StarterBotAuto3Ball", group = "StarterBot")
@@ -47,6 +49,8 @@ public class StarterBotAuto extends LinearOpMode {
         limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
         limelight.start(); // This tells Limelight to start looking!
 
+        limelight.pipelineSwitch(0); // Switch to pipeline number 0
+
         flyWheell.setDirection(CRServo.Direction.FORWARD);
         flyWheelr.setDirection(CRServo.Direction.REVERSE);
 
@@ -67,48 +71,71 @@ public class StarterBotAuto extends LinearOpMode {
 
         waitForStart();
 
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            double tx = result.getTx(); // How far left or right the target is (degrees)
+            double ty = result.getTy(); // How far up or down the target is (degrees)
+            double ta = result.getTa(); // How big the target looks (0%-100% of the image)
+
+            telemetry.addData("Target X", tx);
+            telemetry.addData("Target Y", ty);
+            telemetry.addData("Target Area", ta);
+        } else {
+            telemetry.addData("Limelight", "No Targets");
+        }
+
+        if (result != null && result.isValid()) {
+           Pose3D botpose = result.getBotpose();
+            if (botpose != null) {
+                double x = botpose.getPosition().x;
+                double y = botpose.getPosition().y;
+                telemetry.addData("MT1 Location", "(" + x + ", " + y + ")");
+            }
+        }
+
 
         // --------------------------- SHOOTING ------------------------------
 
-        // Spin-up hogback using velocity
-        hogback.setVelocity(LAUNCHER_VELOCITY);
-
-        // spin up flywheels using power
-        flyWheell.setPower(1.0);
-        flyWheelr.setPower(1.0);
-
-        sleep(1200); // Let wheels stabilize
-
-        // Shoot 3 balls
-        for (int i = 0; i < 3; i++) {
-
-            // Feed ball
+            // Spin-up hogback using velocity
             hogback.setVelocity(LAUNCHER_VELOCITY);
-            sleep(300);
 
-            // pause between shots
+            // spin up flywheels using power
+            flyWheell.setPower(1.0);
+            flyWheelr.setPower(1.0);
+
+            sleep(1200); // Let wheels stabilize
+
+            // Shoot 3 balls
+            for (int i = 0; i < 3; i++) {
+
+                // Feed ball
+                hogback.setVelocity(LAUNCHER_VELOCITY);
+                sleep(300);
+
+                // pause between shots
+                hogback.setVelocity(0);
+                sleep(200);
+            }
+
+            // Stop shooter
+            flyWheell.setPower(0);
+            flyWheelr.setPower(0);
             hogback.setVelocity(0);
-            sleep(200);
+
+
+            // -------------------------- MOVE BACKWARD ----------------------------
+
+            leftFrontDrive.setPower(-0.4);
+            rightFrontDrive.setPower(-0.4);
+            leftBackDrive.setPower(-0.4);
+            rightBackDrive.setPower(-0.4);
+
+            sleep(1000); // adjust distance here
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
         }
 
-        // Stop shooter
-        flyWheell.setPower(0);
-        flyWheelr.setPower(0);
-        hogback.setVelocity(0);
-
-
-        // -------------------------- MOVE BACKWARD ----------------------------
-
-        leftFrontDrive.setPower(-0.4);
-        rightFrontDrive.setPower(-0.4);
-        leftBackDrive.setPower(-0.4);
-        rightBackDrive.setPower(-0.4);
-
-        sleep(1000); // adjust distance here
-
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
     }
-}
