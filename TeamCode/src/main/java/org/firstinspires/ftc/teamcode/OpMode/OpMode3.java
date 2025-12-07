@@ -32,6 +32,9 @@ public class OpMode3 extends LinearOpMode {
             double vertical = gamepad1.right_stick_y * 0.6;
             double turn = -1.0 * gamepad1.left_stick_x * 0.6;
 
+            double tx = LimelightHelpers.getTX("limelight");
+            boolean hasTarget = LimelightHelpers.hasTarget("limelight");
+
             double flPower = vertical + turn + horizontal;
             double frPower = vertical - turn - horizontal;
             double blPower = vertical + turn - horizontal;
