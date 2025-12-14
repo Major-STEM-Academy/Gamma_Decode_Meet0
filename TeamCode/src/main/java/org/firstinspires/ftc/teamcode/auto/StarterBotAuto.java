@@ -10,6 +10,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -32,8 +34,84 @@ public class StarterBotAuto extends LinearOpMode {
     final double LAUNCHER_VELOCITY = 1750;   // hogback
     final double LAUNCHER_MIN_VELOCITY = 1650;
 
+    private enum LaunchState {
+        IDLE,
+        SPIN_UP,
+        LAUNCH,
+        LAUNCHING,
+        LAUNCHED
+    }
+
+    private LaunchState launchState = LaunchState.IDLE;
+    private ElapsedTime feederTimer = new ElapsedTime();
+
+    final double FEED_TIME_SECONDS = 0.5;
+    final double FULL_SPEED = 1.0;
+    final double STOP_SPEED = 0.0;
+
+    int shotsFired = 0;
+    int maxShots = 1;
+
+    private void updateLauncher(boolean shotRequested) {
+        telemetry.addData("Current State (in update)", launchState); // Added for debug
+
+        switch (launchState) {
+
+            case IDLE: //only request shot if there hasn't been max # of shots yet
+                if (shotRequested && shotsFired < maxShots) {
+                    launchState = LaunchState.SPIN_UP;
+                }
+                break;
+
+            case SPIN_UP:
+                //set velocity to target velocity
+                hogback.setVelocity(LAUNCHER_VELOCITY);
+                //if velocity is at target range then go to launch
+                if (hogback.getVelocity() >= LAUNCHER_MIN_VELOCITY) {
+                    launchState = LaunchState.LAUNCH;
+                }
+                break;
+
+            case LAUNCH:
+                //start running feeders
+                flyWheell.setPower(FULL_SPEED);
+                flyWheelr.setPower(FULL_SPEED);
+                feederTimer.reset(); //start time for feeders
+                launchState = LaunchState.LAUNCHING; //go to next state
+                break;
+
+            case LAUNCHING:
+                //after feed time, go to next state and add shotsFired count
+                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
+                    flyWheell.setPower(STOP_SPEED);
+                    flyWheelr.setPower(STOP_SPEED);
+                    launchState = LaunchState.LAUNCHED;
+                    shotsFired++; // IMPORTANT
+                }
+                break;
+
+            case LAUNCHED:
+                // check if shooter velocity is below minimum required velocity
+                //if velocity<min velocity, go back to increase velocity
+                //else if hasn't reached max # of shots yet, then loop again
+                //else, stay in launched state
+                if(hogback.getVelocity()< LAUNCHER_MIN_VELOCITY) {
+                    launchState = LaunchState.SPIN_UP;
+                }else if (shotsFired < maxShots) {
+                    launchState = LaunchState.IDLE;
+                }else{
+
+                }break;
+
+        }
+    }
+
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+
+
 
         // Hardware map
         hogback = hardwareMap.get(DcMotorEx.class, "hogback");
@@ -71,6 +149,7 @@ public class StarterBotAuto extends LinearOpMode {
 
         waitForStart();
 
+/*----------------LIMELIGHT----------------------------
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
             double tx = result.getTx(); // How far left or right the target is (degrees)
@@ -93,37 +172,38 @@ public class StarterBotAuto extends LinearOpMode {
             }
         }
 
-
+ */
         // --------------------------- SHOOTING ------------------------------
 
-            // Spin-up hogback using velocity
-            hogback.setVelocity(LAUNCHER_VELOCITY);
+// ensure launcher motor is set to encoder in order to control velocity
 
-            // spin up flywheels using power
-            flyWheell.setPower(1.0);
-            flyWheelr.setPower(1.0);
+        hogback.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(1200); // Let wheels stabilize
+        shotsFired = 0;
+        launchState = LaunchState.IDLE;
 
-            // Shoot 3 balls
-            for (int i = 0; i < 3; i++) {
+// Loop until max # of balls are shot
+        while (opModeIsActive() && shotsFired < maxShots) {
 
-                // Feed ball
-                hogback.setVelocity(LAUNCHER_VELOCITY);
-                sleep(300);
+            // Always request a shot when idle. idle should also be able to go to spin_up
+            boolean requestShot = (launchState == LaunchState.IDLE || launchState == LaunchState.LAUNCHED);
 
-                // pause between shots
-                hogback.setVelocity(0);
-                sleep(200);
-            }
+            updateLauncher(requestShot);
 
-            // Stop shooter
-            flyWheell.setPower(0);
-            flyWheelr.setPower(0);
-            hogback.setVelocity(0);
+            telemetry.addData("Launch State", launchState);
+            telemetry.addData("Shots Fired", shotsFired);
+            telemetry.addData("Velocity", hogback.getVelocity());
+            telemetry.update();
+        }
+
+// Stop shooter after max # of shots
+        hogback.setVelocity(0);//stop shooter
+        flyWheell.setPower(0);
+        flyWheelr.setPower(0);
 
 
-            // -------------------------- MOVE BACKWARD ----------------------------
+
+        // -------------------------- MOVE BACKWARD ----------------------------
 
             leftFrontDrive.setPower(-0.4);
             rightFrontDrive.setPower(-0.4);
@@ -136,6 +216,12 @@ public class StarterBotAuto extends LinearOpMode {
             rightFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
             rightBackDrive.setPower(0);
+
+        //---------------------------- IDLE -----------------------------
+            while(opModeIsActive()){
+                idle();
+            }
+
         }
 
     }
