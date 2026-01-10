@@ -25,8 +25,8 @@ public class StarterBotAuto extends LinearOpMode {
     private DcMotorEx rightBackDrive;
 
     // ---------------- SHOOTER CONSTANTS ----------------
-    final double LAUNCHER_VELOCITY = 1750;
-    final double LAUNCHER_MIN_VELOCITY = 1650;
+    final double LAUNCHER_VELOCITY = 1900;
+    final double LAUNCHER_MIN_VELOCITY = 1800;
 
     final double FEED_TIME_SECONDS = 0.5;
     final double FULL_SPEED = 1.0;
