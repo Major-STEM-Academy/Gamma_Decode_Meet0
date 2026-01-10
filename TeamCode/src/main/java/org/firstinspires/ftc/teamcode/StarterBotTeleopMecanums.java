@@ -278,7 +278,7 @@ public class StarterBotTeleopMecanums extends OpMode {
                 break;
             case SPIN_UP:
                 hogback.setVelocity(HOGBACK_TARGET_VELOCITY);
-                if (hogback.getVelocity() > HOGBACK_MIN_VELOCITY) {
+                if (hogback.getVelocity() > HOGBACK_MIN_VELOCITY){
                     launchState = LaunchState.LAUNCH;
                 }
                 break;
