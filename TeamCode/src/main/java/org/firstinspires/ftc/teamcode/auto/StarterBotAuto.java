@@ -131,7 +131,7 @@ public class StarterBotAuto extends LinearOpMode {
 
         telemetry.addLine("Initialized - READY");
         telemetry.update();
-
+// hi
         waitForStart();
 
         // ---------------- SHOOT ----------------
