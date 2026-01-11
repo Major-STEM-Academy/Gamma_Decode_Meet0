@@ -85,6 +85,8 @@ public class StarterBotTeleopMecanums extends OpMode {
 
     ElapsedTime feederTimer = new ElapsedTime();
 
+    int maxShots = 1;
+
     /*
      * TECH TIP: State Machines
      * We use a "state machine" to control our launcher motor and feeder servos in this program.
@@ -232,7 +234,11 @@ public class StarterBotTeleopMecanums extends OpMode {
         /*
          * Now we call our "Launch" function.
          */
-        launch(gamepad1.rightBumperWasPressed());
+        if (gamepad1.right_trigger > 0.5) {
+            launchMultiple(3); // fire 3 shots in a row
+        }
+        launch(maxShots > 0); // continue the multi-shot state machine
+
 
         /*
          * Show the state and motor powers
@@ -272,29 +278,54 @@ public class StarterBotTeleopMecanums extends OpMode {
     void launch(boolean shotRequested) {
         switch (launchState) {
             case IDLE:
-                if (shotRequested) {
+                if (shotRequested && maxShots == 0) {
+                    // Fire one shot if single shot requested
+                    maxShots = 1;
+                    launchState = LaunchState.SPIN_UP;
+                } else if (shotRequested && maxShots > 0) {
                     launchState = LaunchState.SPIN_UP;
                 }
                 break;
+
             case SPIN_UP:
                 hogback.setVelocity(HOGBACK_TARGET_VELOCITY);
-                if (hogback.getVelocity() > HOGBACK_MIN_VELOCITY){
+                if (hogback.getVelocity() > HOGBACK_MIN_VELOCITY) {
                     launchState = LaunchState.LAUNCH;
                 }
                 break;
+
             case LAUNCH:
                 leftFeeder.setPower(FULL_SPEED);
                 rightFeeder.setPower(FULL_SPEED);
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
                 break;
+
             case LAUNCHING:
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
-                    launchState = LaunchState.IDLE;
+                    maxShots--; // one shot completed
                     leftFeeder.setPower(STOP_SPEED);
                     rightFeeder.setPower(STOP_SPEED);
+
+                    if (maxShots > 0) {
+                        launchState = LaunchState.SPIN_UP; // spin up again for next shot
+                    } else {
+                        launchState = LaunchState.IDLE; // done firing
+                    }
                 }
                 break;
         }
     }
+
+    public void launchMultiple(int numberOfShots) {
+        // Only start if we're idle
+        if (launchState == LaunchState.IDLE) {
+            maxShots = numberOfShots;
+            launchState = LaunchState.SPIN_UP;
+        }
+    }
+
+
+
+
 }
