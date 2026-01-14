@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 
 public abstract class AutoHardware extends LinearOpMode {
 
@@ -30,6 +32,7 @@ public abstract class AutoHardware extends LinearOpMode {
    // protected DcMotor         liftArm  = null;
 
     protected ElapsedTime     runtime = new ElapsedTime();
+
 
     // For motot encoders
     protected static final double     COUNTS_PER_MOTOR_REV    = 100 ;    // eg: TETRIX Motor Encoder
@@ -89,7 +92,6 @@ public abstract class AutoHardware extends LinearOpMode {
 
 
     public void initAll(){
-       // initTfodAndAprilTag();
         initServo();
         initMotor();
         initIMU();
@@ -206,6 +208,10 @@ public abstract class AutoHardware extends LinearOpMode {
         frontrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void initAprilTagDetector(){
+
     }
 
   /* public void driveToBackBoardByAprilTag(int targetId) {

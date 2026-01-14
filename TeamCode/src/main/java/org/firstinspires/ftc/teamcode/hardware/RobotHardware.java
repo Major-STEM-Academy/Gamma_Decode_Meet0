@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -25,6 +26,8 @@ public class RobotHardware {
     public DcMotor motorbl = null;
 
     public DcMotor hogback = null;
+
+    public Limelight3A limelight = null;
 
 
      public CRServo flyWheell = null; // tilt servo horizontal
