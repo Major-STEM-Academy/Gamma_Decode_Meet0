@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
@@ -18,10 +19,10 @@ public class StarterBotTeleopMecanums extends OpMode {
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = -1;
 
-    final double HOGBACK_TARGET_VELOCITY = 1900;
-    final double HOGBACK_MIN_VELOCITY = 1800;
+    final double HOGBACK_TARGET_VELOCITY = 1800;
+    final double HOGBACK_MIN_VELOCITY = 1700;
 
-    final double BUMPER_FEED_TIME = 0.55;
+    final double BUMPER_FEED_TIME = 0.6;
     final double BUMPER_FEED_POWER = -0.3;
 
     private DcMotor leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive;
@@ -91,22 +92,29 @@ public class StarterBotTeleopMecanums extends OpMode {
         );
 
         // Y starts hogback and keeps it running
-        if (gamepad1.y) {
+        if (gamepad2.y) {
+            leftFrontDrive.setZeroPowerBehavior(BRAKE);
+            rightFrontDrive.setZeroPowerBehavior(BRAKE);
+            leftBackDrive.setZeroPowerBehavior(BRAKE);
+            rightBackDrive.setZeroPowerBehavior(BRAKE);
             hogback.setVelocity(HOGBACK_TARGET_VELOCITY);
+
         }
 
         // A stops hogback
-        if (gamepad1.a) {
+        if (gamepad2.a) {
             hogback.setVelocity(STOP_SPEED);
+
         }
 
+
         // Right trigger fires 3 shots
-        if (gamepad1.right_trigger > 0.5) {
+        if (gamepad2.right_trigger > 0.5) {
             launchMultiple(3);
         }
 
-        // Right bumper jogs feeders for 0.1s
-        if (gamepad1.right_bumper && launchState == LaunchState.IDLE) {
+        // Right bumper jogs feeders for 0.1s  mizuki
+        if (gamepad2.right_bumper && launchState == LaunchState.IDLE) {
             feederTimer.reset();
             leftFeeder.setPower(BUMPER_FEED_POWER);
             rightFeeder.setPower(BUMPER_FEED_POWER);
@@ -124,7 +132,7 @@ public class StarterBotTeleopMecanums extends OpMode {
                 Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate),
                 1
         );
-
+//wonderhoy!!
         leftFrontDrive.setPower((forward + strafe + rotate) / denominator);
         rightFrontDrive.setPower((forward - strafe - rotate) / denominator);
         leftBackDrive.setPower((forward - strafe + rotate) / denominator);

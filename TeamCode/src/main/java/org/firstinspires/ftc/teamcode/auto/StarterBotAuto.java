@@ -17,10 +17,11 @@ public class StarterBotAuto extends LinearOpMode {
 
     // ----------- Shooter Constants -----------
     final double FEED_TIME_SECONDS = 0.5;
+    final double BETWEEN_SHOTS_DELAY = 0.6;
+    final int NUM_SHOTS = 3;
+
     final double STOP_SPEED = 0.0;
-    final double FULL_SPEED = 1.0; // full power for servos and motors
-    final double HOGBACK_TARGET_VELOCITY = 1900; // for reference
-    final double HOGBACK_MIN_VELOCITY = 1800;    // for reference
+    final double FULL_SPEED = 1.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,19 +61,23 @@ public class StarterBotAuto extends LinearOpMode {
 
         waitForStart();
 
-        // ----------- Shoot Routine -----------
-        // Spin up hogback motor
-        hogback.setPower(FULL_SPEED);
-        sleep(500); // wait for motor to reach near-target speed
+        // ----------- Shoot Routine (3 Balls) -----------
 
-        // Start flywheels
+        // Spin up shooter
+        hogback.setPower(FULL_SPEED);
         flyWheell.setPower(FULL_SPEED);
         flyWheelr.setPower(FULL_SPEED);
 
-        // Feed balls
-        sleep((long)(FEED_TIME_SECONDS * 1000)); // 0.5 seconds
+        // Allow shooter to reach speed
+        sleep(800);
 
-        // Stop all shooter motors
+        // Shoot 3 balls
+        for (int i = 0; i < NUM_SHOTS && opModeIsActive(); i++) {
+            sleep((long) (FEED_TIME_SECONDS * 1000));
+            sleep((long) (BETWEEN_SHOTS_DELAY * 1000));
+        }
+
+        // Stop shooter
         flyWheell.setPower(STOP_SPEED);
         flyWheelr.setPower(STOP_SPEED);
         hogback.setPower(STOP_SPEED);
@@ -82,15 +87,16 @@ public class StarterBotAuto extends LinearOpMode {
         motorfr.setPower(-0.4);
         motorbl.setPower(-0.4);
         motorbr.setPower(-0.4);
-        sleep(4000); // move backward 4 seconds
 
-        // Stop motors
+        sleep(4000);
+
+        // Stop drive motors
         motorfl.setPower(0);
         motorfr.setPower(0);
         motorbl.setPower(0);
         motorbr.setPower(0);
 
-        // Loop to keep opmode alive
+        // Keep opmode alive
         while (opModeIsActive()) {
             idle();
         }
